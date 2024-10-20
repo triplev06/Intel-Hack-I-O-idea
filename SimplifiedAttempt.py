@@ -1,7 +1,7 @@
 import cv2 as cv
 import numpy as np
 
-def find_transformation(ref, input_frame, scale_factor=0.25, MIN_MATCH_COUNT=10, draw=False, printout=False, drawBlue=False):
+def find_transformation(ref, input_frame, scale_factor=0.50, MIN_MATCH_COUNT=10, draw=False, printout=False):
     img1 = cv.resize(ref, None, fx=scale_factor, fy=scale_factor)
     img2 = cv.resize(input_frame, None, fx=scale_factor, fy=scale_factor)
 
@@ -49,11 +49,11 @@ def draw_matches(img1, kp1, img2, kp2, good, mask):
     img3 = cv.drawMatches(img1, kp1, img2, kp2, good, None, **draw_params)
 
     for i, match in enumerate(good):
-        if mask[i] drawBlue = False:
+        if mask[i]:
             x1, y1 = map(int, kp1[match.queryIdx].pt)
             x2, y2 = map(int, kp2[match.trainIdx].pt)
-            cv.putText(img3, f"({x1}, {y1})", (x1, y1), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1)
-            cv.putText(img3, f"({x2}, {y2})", (x2 + img1.shape[1], y2), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1)
+            #cv.putText(img3, f"({x1}, {y1})", (x1, y1), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1)
+            #cv.putText(img3, f"({x2}, {y2})", (x2 + img1.shape[1], y2), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1)
 
         cv.imshow('Matches', img3)
     cv.waitKey(0)
@@ -67,7 +67,7 @@ if __name__ == "__main__":
 
     # Compare test image with img1
     print(f"Comparing snakesmall2.jpg with snakesmall1.jpg:")
-    result1 = find_transformation(img1, img2, scale_factor=0.25, draw=True, printout=True, drawBlue = True)
+    result1 = find_transformation(img1, img2, scale_factor=0.50, draw=True, printout=True)
         
     if result1:
             dx1, dy1, theta1 = result1
@@ -81,7 +81,7 @@ if __name__ == "__main__":
         
         # Compare test image with img2
     print(f"Comparing snakesmall2.jpg with snakesmall2.jpg:")
-    result2 = find_transformation(img2, img2, scale_factor=0.25, draw=True, printout=True)
+    result2 = find_transformation(img2, img2, scale_factor=0.50, draw=True, printout=True)
         
     if result2:
             dx2, dy2, theta2 = result2

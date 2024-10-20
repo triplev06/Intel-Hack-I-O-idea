@@ -9,6 +9,7 @@ from imutils import contours
 
 def capture_image():
     # Initialize the camera
+    print("running camera")
     cap = cv2.VideoCapture(0)
 
     #initialize a total amount of pictures taken for data
@@ -25,41 +26,34 @@ def capture_image():
 
 
 
-    while True:
-        # Capture frame-by-frame
-        ret, frame = cap.read()
+    
+    ret, frame = cap.read()
 
-        # Check if frame is captured successfully
-        if not ret:
-            print("Error: Could not read frame.")
-            break
+    # Check if frame is captured successfully
+   
+    frame = cv2.resize(frame,(xframe,yframe))
+    cv2.putText(frame,".",(int(xmid),int(ymid)),cv2.FONT_HERSHEY_COMPLEX,(3),(0,0,255))
+
+     # Display the frame
+    cv2.imshow('Camera Feed', frame)
+
         
-        frame = cv2.resize(frame,(xframe,yframe))
-        cv2.putText(frame,".",(int(xmid),int(ymid)),cv2.FONT_HERSHEY_COMPLEX,(3),(0,0,255))
-
-        # Display the frame
-        cv2.imshow('Camera Feed', frame)
-
-        k = cv2.waitKey(1)
-        if k%256 == 32:
-            # SPACE pressed
-            img_name = "opencv_frame_{}.png".format(img_counter)
+        
+    # SPACE pressed
+    img_name = "opencv_frame_{}.png".format(img_counter)
 
 
-            while(os.path.isfile("opencv_frame_{}.png".format(img_counter))):
-                img_counter += 1
+    while(os.path.isfile("opencv_frame_{}.png".format(img_counter))):
+        img_counter += 1
            
-            img_name = "opencv_frame_{}.png".format(img_counter)
+    img_name = "opencv_frame_{}.png".format(img_counter)
 
-            cv2.imwrite(img_name, frame)
-            print("{} written!".format(img_name))
+    cv2.imwrite(img_name, frame)
+    print("{} written!".format(img_name))
 
-            return img_name
+    return img_name
 
-
-        # Press 'q' to quit
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break   
+           
     # Release the camera and close the window
     cap.release()
     cv2.destroyAllWindows()

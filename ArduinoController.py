@@ -11,14 +11,14 @@ import time
 
 
 #Send data to Arduino
-def move():
+def move(x, y):
     arduino_port = 'COM3' #changing arduino port to com3
     baud_rate = 9600 #Same as set in arduino port
 
     ser = serial.Serial(arduino_port, baud_rate, timeout=1)
     time.sleep(2)
 
-    ser.write(b"G1 X4 Y2") #Sends data
+    ser.write(b"G1 X5 Y2") #Sends data
     print("moved")
 
     time.sleep(5)

@@ -3,10 +3,14 @@ import numpy as np
 import json
 import CameraController
 import ArduinoController
+import math
 
 def find_transformation(ref, input_frame, scale_factor=1, MIN_MATCH_COUNT=10, draw=False, printout=False):
-    img1 = cv.resize(ref, None, fx=scale_factor, fy=scale_factor)
-    img2 = cv.resize(input_frame, None, fx=scale_factor, fy=scale_factor)
+    #img1 = cv.resize(ref, None, fx=scale_factor, fy=scale_factor)
+    #img2 = cv.resize(input_frame, None, fx=scale_factor, fy=scale_factor)
+
+    img1 = ref
+    img2 = input_frame
 
     sift = cv.SIFT_create()
     kp1, des1 = sift.detectAndCompute(img1, None)
@@ -57,13 +61,18 @@ def draw_matches(img1, kp1, img2, kp2, good, mask):
 
 # Main execution
 if __name__ == "__main__":
+    
+    x = 5
+    y = 2
+
     holder1 = CameraController.capture_image()
     img1 = cv.imread(holder1, 0)  # 180 theta
     
-    ArduinoController.move()
+    ArduinoController.move(5, 2)
 
     holder2 = CameraController.capture_image()
     img2 = cv.imread(holder2, 0)
+
     
     # Compare test image with img1
     print(f"Comparing image 1 with image 2:")
@@ -71,8 +80,15 @@ if __name__ == "__main__":
         
     if result1:
         dx1, dy1, theta1 = result1
+
+        Measured = math.sqrt(math.pow(dx1, 2) + math.pow(dy1, 2))
+        Theoretical = math.sqrt(math.pow(x, 2)+ math.pow(y, 2))
+        PercentError = (Measured - Theoretical)/Theoretical * 100
+
+
         print(f"Results for comparison with image 1:")
         print(f"Displacement (dx, dy): ({dx1:.2f}, {dy1:.2f})")
+        print(f"Statistical Error: {PercentError:.2f}")
         print(f"Rotation angle (theta): {theta1:.2f} degrees")
 
         # Create the JSON object with x and y

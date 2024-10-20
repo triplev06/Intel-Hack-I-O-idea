@@ -1,6 +1,5 @@
 import cv2 as cv
 import numpy as np
-import CameraController
 import json
 
 def find_transformation(ref, input_frame, scale_factor=1, MIN_MATCH_COUNT=10, draw=False, printout=False):
@@ -50,50 +49,36 @@ def draw_matches(img1, kp1, img2, kp2, good, mask):
                        flags=2)
     img3 = cv.drawMatches(img1, kp1, img2, kp2, good, None, **draw_params)
 
-    for i, match in enumerate(good):
-        cv.imshow('Matches', img3)
+    cv.imshow('Matches', img3)
     cv.waitKey(0)
     cv.destroyAllWindows()
 
 # Main execution
 if __name__ == "__main__":
-    # Load the two reference images
-
-    holder1 = CameraController.capture_image()
-    holder2 = CameraController.capture_image()
-    print(holder1)
-    print(holder2)
-
-
-    img1 = cv.imread(holder1, 0)  # 180 theta
-    img2 = cv.imread(holder2, 0)
+    img1 = cv.imread('app/public/opencv_frame_0.png', 0)  # 180 theta
+    img2 = cv.imread('app/public/opencv_frame_1.png', 0)
 
     # Compare test image with img1
     print(f"Comparing image 1 with image 2:")
     result1 = find_transformation(img1, img2, scale_factor=1, draw=True, printout=True)
         
     if result1:
-            dx1, dy1, theta1 = result1
-            print(f"Results for comparison with image 1:")
-            print(f"Displacement (dx, dy): ({dx1:.2f}, {dy1:.2f})")
-            print(f"Rotation angle (theta): {theta1:.2f} degrees")
-    else:
-            print(f"Could not process images")
+        dx1, dy1, theta1 = result1
+        print(f"Results for comparison with image 1:")
+        print(f"Displacement (dx, dy): ({dx1:.2f}, {dy1:.2f})")
+        print(f"Rotation angle (theta): {theta1:.2f} degrees")
+
+        # Create the JSON object with x and y
+        json_data = {
+            "x": round(dx1, 2),
+            "y": round(dy1, 2),
+            "theta": round(theta1, 2)
+        }
+
+        # Write the JSON to a file
+        with open("data.json", "w") as out_file:
+            json.dump(json_data, out_file, indent=4)
         
-    def load_image(result2):
-            img = cv.imread(result2, 0)
-
-    jsonInfo = [float(dx1), float(dy1)]
-    f= open("output.txt", "a")
-    print(jsonInfo, file=f)
-    f.close()
-    jsonFile = 'output.txt'
-    dict1 = {}
-    with open(jsonFile) as fh:
-        for line in fh:
-            command, description = line.strip().split(None, 1)
-        dict1[command] = description.strip()
-    out_file = open("data.json", "w")
-    json.dump(dict1, out_file, indent = 4, sort_keys = False)
-    out_file.close()
-
+        print("JSON data saved to 'data.json':", json_data)
+    else:
+        print(f"Could not process images")

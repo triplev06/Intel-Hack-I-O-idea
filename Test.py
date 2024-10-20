@@ -11,8 +11,8 @@ import cv2 as cv
 #Threshold for matching
 MIN_MATCH_COUNT = 10
 
-img1 = cv.imread('snakesmall1.jpg',0) #180 theta
-img2 = cv.imread('snakesmall2.jpg', 0)
+img1 = cv.imread('opencv_frame_1.png',0) #180 theta
+img2 = cv.imread('opencv_frame_2.png', 0)
 
 #img1 = cv.resize(img1, None, fx=0.15, fy=0.15)
 #Create test set

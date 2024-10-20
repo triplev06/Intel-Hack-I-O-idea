@@ -1,6 +1,8 @@
 import cv2 as cv
 import numpy as np
 import json
+import CameraController
+import ArduinoController
 
 def find_transformation(ref, input_frame, scale_factor=1, MIN_MATCH_COUNT=10, draw=False, printout=False):
     img1 = cv.resize(ref, None, fx=scale_factor, fy=scale_factor)
@@ -55,9 +57,14 @@ def draw_matches(img1, kp1, img2, kp2, good, mask):
 
 # Main execution
 if __name__ == "__main__":
-    img1 = cv.imread('app/public/opencv_frame_0.png', 0)  # 180 theta
-    img2 = cv.imread('app/public/opencv_frame_1.png', 0)
+    holder1 = CameraController.capture_image()
+    img1 = cv.imread(holder1, 0)  # 180 theta
+    
+    ArduinoController.move()
 
+    holder2 = CameraController.capture_image()
+    img2 = cv.imread(holder2, 0)
+    
     # Compare test image with img1
     print(f"Comparing image 1 with image 2:")
     result1 = find_transformation(img1, img2, scale_factor=1, draw=True, printout=True)
